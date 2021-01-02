@@ -33,7 +33,7 @@ namespace setting
 		{
 			fServices.close();
 			fPassword.close();
-			std::cout << "\n\n\n\nNew Service added successfully!!\n\n\nPress any key to return..."; // here is where you left and add a cosnt char* print message into the search function
+			std::cout << "\n\n\n\nNew Service added successfully!!\n\n\nPress any key to return...";
 			_getch();
 		}
 		pass::Interface(master_password);
