@@ -2,8 +2,12 @@
 
 #include <conio.h>
 enum DIR { UP_ARROW = 296, DOWN_ARROW = 304, ENTER_KEY = 13, ARROW_KEY = 224 };
-std::array<std::string, 50> services, service_passwords;
-std::array<int, 50> Printed{ 51 };
+std::array<std::string, 50> services, service_passwords, code;
+
+std::array<std::string, 50>& pass::get_code_arr()
+{
+	return code;
+}
 
 char isSelected(int& sel_point, const int& curr_pos, const int& size)
 {
@@ -80,7 +84,6 @@ int pass::search(const std::string& search_for, int& sel_point, int& total, cons
 	system("cls");
 	std::cout << display_text << search_for;
 
-	int Printed_count = get_count(services) + 1;
 
 	size_t search_range = search_for.size();
 	int count = 0;
@@ -93,7 +96,6 @@ int pass::search(const std::string& search_for, int& sel_point, int& total, cons
 		int pos = temp.find(sub_search_for);
 		if (pos != -1 && precision_search(temp.c_str(), search_for.c_str()))
 		{
-			Printed[count] = i;
 			char sel = isSelected(sel_point, count, total);
 			count++;
 			std::cout << '\n' << sel << count << ". " << services[i] << sel;
@@ -113,7 +115,6 @@ int pass::search(const std::string& search_for, int& sel_point, int& total, cons
 				int pos = temp.find(sub_search_for);
 				if (pos != -1)
 				{
-					Printed[count] = i;
 					char sel = isSelected(sel_point, count, total);
 					count++;
 					std::cout << '\n' << sel << count << ". " << services[i] << sel;
