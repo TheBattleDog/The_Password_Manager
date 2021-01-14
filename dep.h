@@ -31,6 +31,7 @@ namespace strf
 	void str_tolower(std::string& str);
 	int getstr(std::string& str, int& sel_point, int& selected, bool settings = false);
 	int finder(const char* str, const char* search_for, int start_from = 0);
+	bool RUN();
 }
 
 namespace file_h
@@ -38,6 +39,6 @@ namespace file_h
 	void Services_Password(std::array<std::string, 50>& services, std::array<std::string, 50>& passwords);
 	void get_password(std::string& master_password);
 	void Make_File(std::fstream& service, std::fstream& pass, std::fstream& code);
-	std::string encrypt(std::string encrypt_str, size_t pos = 0);
+	std::string encrypt(std::string encrypt_str, std::string& encrypted_code);
 	void decrypt(std::string& decrypt_str, std::string& code);
 }
