@@ -4,6 +4,7 @@
 enum DIR { UP_ARROW = 296, DOWN_ARROW = 304, ENTER_KEY = 13, ARROW_KEY = 224 };
 std::array<std::string, 50> services, service_passwords, code;
 
+
 std::array<std::string, 50>& pass::get_code_arr()
 {
 	return code;

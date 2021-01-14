@@ -3,6 +3,13 @@
 #include <cctype>
 #include <cstring>
 
+bool run = true;
+
+bool strf::RUN()
+{
+	return run;
+}
+
 void strf::str_tolower(std::string& str)
 {
 	for (char& i : str)
@@ -28,7 +35,7 @@ int strf::getstr(std::string& str, int& Sel_point, int& selected, bool settings)
 		{
 			return char(13);
 		}
-		else if (got == 19) // Ctrl+s = 19
+		else if (got == 19) // Ctrl + s = 19
 		{
 			return got;
 		}
@@ -37,6 +44,11 @@ int strf::getstr(std::string& str, int& Sel_point, int& selected, bool settings)
 			got += _getch();
 			pass::search_nav(got, Sel_point);
 			nav = true;
+		}
+		else if (got == 17) // Ctlr + q = 17
+		{
+			run = false;
+			return 0;
 		}
 		else
 		{

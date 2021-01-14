@@ -13,9 +13,9 @@ namespace setting
 		std::string service, password;
 		std::cout << "\n\n\nEnter the name of the Service to be added >> ";
 		std::cin >> service;
-		std::cout << "Enter the Password for the sevice >> ";
+		std::cout << "Enter the Password for the sevice >> "; 
 		std::cin >> password;
-
+		// Add encryption to all options in settings...
 		std::ofstream fServices;
 		fServices.open("services.txt", std::ios_base::app);
 		fServices << service + '\n';
@@ -84,7 +84,8 @@ namespace setting
 
 	void change_master_password(std::string& master_password, std::array<std::string, 50>& service_passwords, int size)
 	{
-		std::string confirmation;
+		std::array<std::string, 50>& code = pass::get_code_arr();
+		std::string confirmation, master_code;
 		do
 		{
 			system("cls");
@@ -104,16 +105,16 @@ namespace setting
 
 		std::ofstream fPassword("pass.txt", std::ios::trunc);
 
-		fPassword << master_password << '\n';
+		fPassword << file_h::encrypt(master_password, master_code) << '\n';
 		
 		for (int i = 0; i < size; i++)
 		{
-			fPassword << service_passwords[i] << '\n';
+			fPassword << file_h::encrypt(service_passwords[i], code[i]) << '\n';
 		}
 
 		fPassword.close();
 
-		std::cout << "master_password changed successfully!\n\n\nPress any key to coninue...";
+		std::cout << "Master Password changed successfully!\n\n\nPress any key to coninue...";
 
 		_getch();
 		system("cls");
