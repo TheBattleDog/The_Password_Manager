@@ -13,9 +13,10 @@ namespace pass
 	void getpass(std::string& str);
 	void search_nav(const int& got, int& sel_point);
 	void print_pass(const int& pos);
-	int get_service_count(std::array<std::string, 50>& services);
+	int get_service_count();
 	std::array<std::string, 50>& get_pass_code_arr();
 	std::array<std::string, 50>& get_service_code_arr();
+	std::array<std::string, 50>&  get_service_arr();
 }
 
 namespace setting
@@ -42,4 +43,5 @@ namespace file_h
 	void Make_File(std::fstream& service, std::fstream& pass, std::fstream& code);
 	std::string encrypt(std::string encrypt_str, std::string& encrypted_code);
 	void decrypt(std::string& decrypt_str, std::string& code);
+	void app_service_code(std::string& code);
 }
