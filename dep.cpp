@@ -7,12 +7,17 @@ std::array<std::string, 50> services, service_passwords, service_code, pass_code
 
 std::array<std::string, 50>& pass::get_pass_code_arr()
 {
-	return service_code;
+	return pass_code;
 }
 
 std::array<std::string, 50>& pass::get_service_code_arr()
 {
 	return service_code;
+}
+
+std::array<std::string, 50>& pass::get_service_arr()
+{
+	return services;
 }
 
 
@@ -24,7 +29,7 @@ char isSelected(int& sel_point, const int& curr_pos, const int& size)
 	return '\r';
 }
 
-int pass::get_service_count(std::array<std::string, 50>& services)
+int pass::get_service_count()
 {
 	int i;
 	for (i = 0; isalpha(services[i][0]); i++);
@@ -189,7 +194,7 @@ void pass::Interface(std::string& master_password)
 	{
 		if (Sel_item == 1) { setting::add_service(master_password); }
 		if (Sel_item == 2) { setting::del_service(services, service_passwords, master_password); }
-		if (Sel_item == 3) { setting::change_master_password(master_password, service_passwords, pass::get_service_count(services)); }
+		if (Sel_item == 3) { setting::change_master_password(master_password, service_passwords, pass::get_service_count()); }
 		if (Sel_item == 4) { setting::change_service_password(master_password); }
 	}
 	else

@@ -17,9 +17,7 @@ void file_h::decrypt(std::string& decrypt_str, std::string& code)
 std::string file_h::encrypt(std::string encrypt_str, std::string& encrypted_code)
 {
 	srand(time(NULL));
-
-	std::array<std::string, 50> code = pass::get_code_arr();
-
+	encrypted_code.clear();
 	for (char& i : encrypt_str)
 	{
 		int randNum = rand() % 8;
@@ -47,8 +45,8 @@ void file_h::Make_File(std::fstream& service, std::fstream& pass, std::fstream& 
 	pass.open("pass.txt", std::ios_base::out);
 	code.open("cd.txt", std::ios_base::out);
 	
-	pass << file_h::encrypt("p", pass::get_code_arr()[0]) << '\n';
-	code << pass::get_code_arr()[0] << '\n';
+	pass << file_h::encrypt("p", pass::get_pass_code_arr()[0]) << '\n';
+	code << pass::get_pass_code_arr()[0] << '\n';
 	
 	service.close();
 	pass.close();
@@ -65,7 +63,7 @@ void file_h::Services_Password(std::array<std::string, 50>& services, std::array
 	std::fstream fcode("cd.txt", std::ios_base::in);
 
 	std::array<std::string, 50>& service_code = pass::get_service_code_arr();
-	std::array<std::string, 50>& pass_code = pass::get_service_code_arr();
+	std::array<std::string, 50>& pass_code = pass::get_pass_code_arr();
 
 	if (!fServices || !fpassword || !fcode)
 	{
@@ -76,9 +74,12 @@ void file_h::Services_Password(std::array<std::string, 50>& services, std::array
 	}
 
 	int i = 0;
+	
+	fcode.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	while (std::getline(fServices, services[i]))
 	{
+		std::getline(fcode, service_code[i]);
 		decrypt(services[i], service_code[i]);
 		i++;
 	}
@@ -88,7 +89,6 @@ void file_h::Services_Password(std::array<std::string, 50>& services, std::array
 	i = 0;
 
 	fpassword.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	fcode.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	while (std::getline(fpassword, password[i]))
 	{ 
@@ -120,4 +120,34 @@ void file_h::get_password(std::string& master_password)
 
 	fcode.close();
 	fpassword.close();
+}
+
+void file_h::app_service_code(std::string& new_code)
+{
+	std::fstream fCode("cd.txt", std::ios_base::in);
+	std::array<std::string, 50>& service_code = pass::get_service_code_arr();
+	std::array<std::string, 50>& pass_code = pass::get_pass_code_arr();
+	
+	std::string master_code;
+
+	fCode >> master_code;
+
+	fCode.close();
+
+	fCode.open("cd.txt", std::ios_base::out | std::ios_base::trunc);
+	fCode << master_code << '\n';
+	
+	int size = pass::get_service_count();
+
+	for (int i = 0; i < size; i++)
+	{
+		fCode << service_code[i] <<'\n';
+	}
+
+	fCode << new_code << '\n';
+
+	for (int i = 0; i < size; i++)
+	{
+		fCode << pass_code[i] << '\n';
+	}
 }

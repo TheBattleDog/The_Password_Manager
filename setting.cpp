@@ -10,22 +10,17 @@ namespace setting
 {
 	void add_service(std::string& master_password)
 	{
-		std::string service, password, code;
+		std::string service, password, code, pass_code;
 		std::cout << "\n\n\nEnter the name of the Service to be added >> ";
 		std::cin >> service;
 		std::cout << "Enter the Password for the sevice >> "; 
 		std::cin >> password;
 		// Add encryption to all options in settings...
-		std::ofstream fServices("services.txt", std::ios_base::app);
+		std::ofstream fServices("services.txt", std::ios_base::app);	
 
-		service = file_h::encrypt(service, code); // Encrypts the Service name
-
-		fServices << service + '\n';
 		std::ofstream fPassword("pass.txt", std::ios_base::app);
 
-		file_h::encrypt(password, code); // Encrypts the password
-
-		fPassword << password + '\n';
+		std::ofstream fCode("cd.txt", std::ios_base::app);
 		
 		if (!fServices || !fPassword)
 		{
@@ -35,8 +30,17 @@ namespace setting
 		}
 		else
 		{
+			service = file_h::encrypt(service, code); // Encrypts the Service name
+			file_h::app_service_code(code); // Adds the service code to file
+			fServices << service << '\n'; // Appends service name to file
+			
+			password = file_h::encrypt(password, pass_code); // Encrypts the password
+			fPassword << password << '\n'; // Appends password to the file
+			fCode << pass_code << '\n'; // Appends the password code to the file
+
 			fServices.close();
 			fPassword.close();
+			fCode.close();
 			std::cout << "\n\n\n\nNew Service added successfully!!\n\n\nPress any key to return...";
 			_getch();
 		}
@@ -88,8 +92,10 @@ namespace setting
 
 	void change_master_password(std::string& master_password, std::array<std::string, 50>& service_passwords, int size)
 	{
-		std::array<std::string, 50>& code = pass::get_code_arr();
+		std::array<std::string, 50>& Services_code = pass::get_service_code_arr();
+		std::array<std::string, 50>& pass_code = pass::get_pass_code_arr();
 		std::string confirmation, master_code;
+		
 		do
 		{
 			system("cls");
@@ -108,12 +114,25 @@ namespace setting
 		} while (master_password != confirmation);
 
 		std::ofstream fPassword("pass.txt", std::ios::trunc);
+		std::ofstream fCode("cd.txt", std::ios::trunc);
 
 		fPassword << file_h::encrypt(master_password, master_code) << '\n';
 		
 		for (int i = 0; i < size; i++)
 		{
-			fPassword << file_h::encrypt(service_passwords[i], code[i]) << '\n';
+			fPassword << file_h::encrypt(service_passwords[i], pass_code[i]) << '\n';
+		}
+
+		fCode << master_code << '\n';
+
+		for (int i = 0; i < size; i++)
+		{
+			fCode << Services_code[i] << '\n';
+		}
+
+		for (int i = 0; i < size; i++)
+		{
+			fCode << pass_code[i] << '\n';
 		}
 
 		fPassword.close();
