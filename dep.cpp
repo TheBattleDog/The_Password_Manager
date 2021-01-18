@@ -2,13 +2,19 @@
 
 #include <conio.h>
 enum DIR { UP_ARROW = 296, DOWN_ARROW = 304, ENTER_KEY = 13, ARROW_KEY = 224 };
-std::array<std::string, 50> services, service_passwords, code;
+std::array<std::string, 50> services, service_passwords, service_code, pass_code;
 
 
-std::array<std::string, 50>& pass::get_code_arr()
+std::array<std::string, 50>& pass::get_pass_code_arr()
 {
-	return code;
+	return service_code;
 }
+
+std::array<std::string, 50>& pass::get_service_code_arr()
+{
+	return service_code;
+}
+
 
 char isSelected(int& sel_point, const int& curr_pos, const int& size)
 {

@@ -10,17 +10,21 @@ namespace setting
 {
 	void add_service(std::string& master_password)
 	{
-		std::string service, password;
+		std::string service, password, code;
 		std::cout << "\n\n\nEnter the name of the Service to be added >> ";
 		std::cin >> service;
 		std::cout << "Enter the Password for the sevice >> "; 
 		std::cin >> password;
 		// Add encryption to all options in settings...
-		std::ofstream fServices;
-		fServices.open("services.txt", std::ios_base::app);
+		std::ofstream fServices("services.txt", std::ios_base::app);
+
+		service = file_h::encrypt(service, code); // Encrypts the Service name
+
 		fServices << service + '\n';
-		std::ofstream fPassword;
-		fPassword.open("pass.txt", std::ios_base::app);
+		std::ofstream fPassword("pass.txt", std::ios_base::app);
+
+		file_h::encrypt(password, code); // Encrypts the password
+
 		fPassword << password + '\n';
 		
 		if (!fServices || !fPassword)

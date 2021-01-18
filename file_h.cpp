@@ -64,7 +64,8 @@ void file_h::Services_Password(std::array<std::string, 50>& services, std::array
 
 	std::fstream fcode("cd.txt", std::ios_base::in);
 
-	std::array<std::string, 50>& code = pass::get_code_arr();
+	std::array<std::string, 50>& service_code = pass::get_service_code_arr();
+	std::array<std::string, 50>& pass_code = pass::get_service_code_arr();
 
 	if (!fServices || !fpassword || !fcode)
 	{
@@ -75,26 +76,28 @@ void file_h::Services_Password(std::array<std::string, 50>& services, std::array
 	}
 
 	int i = 0;
+
+	while (std::getline(fServices, services[i]))
+	{
+		decrypt(services[i], service_code[i]);
+		i++;
+	}
+	
+	fServices.close();
+	
+	i = 0;
+
 	fpassword.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	fcode.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	while (std::getline(fpassword, password[i]))
 	{ 
-		std::getline(fcode, code[i]);
-		decrypt(password[i], code[i]);
+		std::getline(fcode, pass_code[i]);
+		decrypt(password[i], pass_code[i]);
 		i++; 
 	}
-
 	fpassword.close();
 	fcode.close();
-
-	i = 0;
-	while (std::getline(fServices, services[i]))
-	{ 
-		decrypt(services[i], code[i]);
-		i++;
-	}
-	fServices.close();
 }
 
 
