@@ -14,7 +14,8 @@ namespace pass
 	void search_nav(const int& got, int& sel_point);
 	void print_pass(const int& pos);
 	int get_service_count(std::array<std::string, 50>& services);
-	std::array<std::string, 50>& get_code_arr();
+	std::array<std::string, 50>& get_pass_code_arr();
+	std::array<std::string, 50>& get_service_code_arr();
 }
 
 namespace setting
