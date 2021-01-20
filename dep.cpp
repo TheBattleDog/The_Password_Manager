@@ -36,7 +36,7 @@ int pass::get_service_count()
 	return i;
 }
 
-void pass::getpass(std::string& str)
+void pass::getpass(std::string& str, const char* Prompt_Message)
 {
 	char got;
 	str.clear();
@@ -46,7 +46,7 @@ void pass::getpass(std::string& str)
 		if (got == '\b')
 		{
 			system("cls");
-			std::cout << "Enter the Master Password >> ";
+			std::cout << Prompt_Message;
 			str.clear();
 		}
 		else if (got == 13) // 13 is the value of Enter Key
@@ -61,14 +61,15 @@ void pass::getpass(std::string& str)
 void pass::Master_Password(std::string& master_password)
 {
 	std::string user_input;
-	std::cout << "Enter the Master Password >> ";
-	pass::getpass(user_input);
+	const char* Prompt_Message = "Enter the Master Password >> ";
+	std::cout << Prompt_Message;
+	pass::getpass(user_input, Prompt_Message);
 
 	while (user_input != master_password)
 	{
 		std::cout << "\nYou Sus! The password entered was wrong -_-\n";
 		std::cout << "Try Re-Entering the password >> ";
-		pass::getpass(user_input);
+		pass::getpass(user_input, Prompt_Message);
 		system("cls");
 	}
 }
@@ -116,7 +117,9 @@ int pass::search(const std::string& search_for, int& sel_point, int& total, cons
 		}
 	}
 	total = count == 0 ? total : count;
-	if(count == 0) // But if no result is found from previous algo then this one displays an array element if a letter is found at any order.
+	if (count == 0) // But if no result is found from previous algo then this one displays an array element if a letter is found at any order.
+	{
+		int printed = -2; // This may make problems
 		while (search_range)
 		{
 			sub_search_for = search_for.substr(0, search_range);
@@ -125,18 +128,20 @@ int pass::search(const std::string& search_for, int& sel_point, int& total, cons
 				std::string temp = services[i];
 				strf::str_tolower(temp);
 				int pos = temp.find(sub_search_for);
-				if (pos != -1)
+				if (pos != -1 && i != printed) // The second condition may make problems
 				{
 					char sel = isSelected(sel_point, count, total);
 					count++;
 					std::cout << '\n' << sel << count << ". " << services[i] << sel;
+					printed = i; // This line may make some problems
 					if (sel == '|')
-						selected = i; 
+						selected = i;
 				}
 			}
-			total = count;
+			total = count == 0 ? total : count;
 			search_range--;
 		}
+	}
 	return selected;
 }
 
