@@ -10,7 +10,7 @@ namespace pass
 	void Master_Password(std::string& master_password);
 	int search(const std::string& str, int& sel_point, int& total, const char* display_text);
 	void Interface(std::string& master_password);
-	void getpass(std::string& str);
+	void getpass(std::string& str, const char* Prompt_Message);
 	void search_nav(const int& got, int& sel_point);
 	void print_pass(const int& pos);
 	int get_service_count();
