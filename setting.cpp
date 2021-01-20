@@ -10,12 +10,25 @@ namespace setting
 {
 	void add_service(std::string& master_password)
 	{
-		std::string service, password, code, pass_code;
+		std::string service, password, pass_confimation,code, pass_code;
+
+		const char* Pass_Prompt_Message = "\nEnter the Password for the service >> ";
+		const char* ReEnter_Prompt_Message = "\nRe-enter the password >> ";
+
 		std::cout << "\n\n\nEnter the name of the Service to be added >> ";
 		std::cin >> service;
-		std::cout << "Enter the Password for the sevice >> "; 
-		std::cin >> password;
-		// Add encryption to all options in settings...
+
+		while(true)
+		{
+			std::cout << Pass_Prompt_Message;
+			pass::getpass(password, Pass_Prompt_Message);
+			std::cout << ReEnter_Prompt_Message;
+			pass::getpass(pass_confimation, Pass_Prompt_Message);
+			if (password != pass_confimation) { std::cout << "Passwords did match try re-entering >> "; }
+			else { break; }
+		}
+
+		// Add encryption to all options in settings... SURE MAN
 		std::ofstream fServices("services.txt", std::ios_base::app);	
 
 		std::ofstream fPassword("pass.txt", std::ios_base::app);
@@ -95,23 +108,26 @@ namespace setting
 		std::array<std::string, 50>& Services_code = pass::get_service_code_arr();
 		std::array<std::string, 50>& pass_code = pass::get_pass_code_arr();
 		std::string confirmation, master_code;
-		
-		do
+		const char* Prompt_Message = "\nEnter the new master password >> ";
+		const char* ReEnter_Prompt_Message = "\nRe-enter the password >> ";
+
+		while(true)
 		{
 			system("cls");
-			std::cout << "Enter the new master password >> ";
-			std::cin >> master_password;
+			
+			std::cout << Prompt_Message;
+			pass::getpass(master_password, Prompt_Message);
 
-			std::cout << "Re-enter the password >> ";
-			std::cin >> confirmation;
+			std::cout << ReEnter_Prompt_Message;
+			pass::getpass(confirmation, ReEnter_Prompt_Message);
 
 			if (master_password != confirmation)
 			{
-				std::cout << "Passwords did not match...\n\n\nPress any key to re-enter Password.";
+				std::cout << "\nPasswords did not match...\n\n\nPress any key to re-enter Password.";
 				_getch();
 			}
-
-		} while (master_password != confirmation);
+			else { break; }
+		}
 
 		std::ofstream fPassword("pass.txt", std::ios::trunc);
 		std::ofstream fCode("cd.txt", std::ios::trunc);
@@ -137,7 +153,7 @@ namespace setting
 
 		fPassword.close();
 
-		std::cout << "Master Password changed successfully!\n\n\nPress any key to coninue...";
+		std::cout << "\nMaster Password changed successfully!\n\n\nPress any key to coninue...";
 
 		_getch();
 		system("cls");
