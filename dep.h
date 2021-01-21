@@ -16,7 +16,7 @@ namespace pass
 	int get_service_count();
 	std::array<std::string, 50>& get_pass_code_arr();
 	std::array<std::string, 50>& get_service_code_arr();
-	std::array<std::string, 50>&  get_service_arr();
+	std::array<std::string, 50>& get_service_arr();
 }
 
 namespace setting
@@ -24,14 +24,14 @@ namespace setting
 	void add_service(std::string& master_password);
 	void change_master_password(std::string& master_password, std::array<std::string, 50>& service_passwords, int size);
 	void del_service(std::array<std::string, 50>& services, std::array<std::string, 50>& passwords, std::string& master_password);
-	void change_service_password(std::string& master_password);
+	void change_service_password(std::string& master_password, std::array<std::string, 50>& Passwords, std::array<std::string, 50>& Pass_code);
 	int Interface();
 }
 
 namespace strf
 {
 	void str_tolower(std::string& str);
-	int getstr(std::string& str, int& sel_point, int& selected, bool settings = false);
+	int getstr(std::string& str, int& sel_point, int& pos, bool settings = false, const char* Prompt_Message = "Search Bar >> ");
 	int finder(const char* str, const char* search_for, int start_from = 0);
 	bool RUN();
 }
@@ -39,7 +39,7 @@ namespace strf
 namespace file_h
 {
 	void Services_Password(std::array<std::string, 50>& services, std::array<std::string, 50>& passwords);
-	void get_password(std::string& master_password);
+	std::string get_master_password(std::string& master_password);
 	void Make_File(std::fstream& service, std::fstream& pass, std::fstream& code);
 	std::string encrypt(std::string encrypt_str, std::string& encrypted_code);
 	void decrypt(std::string& decrypt_str, std::string& code);
