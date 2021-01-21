@@ -68,7 +68,7 @@ void file_h::Services_Password(std::array<std::string, 50>& services, std::array
 	if (!fServices || !fpassword || !fcode)
 	{
 		file_h::Make_File(fServices, fpassword, fcode);
-		file_h::get_password(password[0]);
+		file_h::get_master_password(password[0]);
 		pass::Master_Password(password[0]);
 		return;
 	}
@@ -101,25 +101,28 @@ void file_h::Services_Password(std::array<std::string, 50>& services, std::array
 }
 
 
-void file_h::get_password(std::string& master_password)
+std::string file_h::get_master_password(std::string& master_password)
 {
 	std::fstream fpassword("pass.txt", std::ios_base::in);
 	std::fstream fcode("cd.txt", std::ios_base::in);
+	std::fstream fservices("services.txt", std::ios_base::in);
 
-	if (!fpassword || !fcode)
+	if (!fpassword || !fcode || !fservices)
 	{
-		return;
+		return "";
 	}
 
-	std::string sCode;
+	std::string master_code;
 
-	fcode >> sCode;
+	fcode >> master_code;
 	fpassword >> master_password;
 
-	decrypt(master_password, sCode);
+	decrypt(master_password, master_code);
 
 	fcode.close();
 	fpassword.close();
+	fservices.close();
+	return master_code;
 }
 
 void file_h::app_service_code(std::string& new_code)

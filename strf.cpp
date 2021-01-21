@@ -16,7 +16,7 @@ void strf::str_tolower(std::string& str)
 		i = tolower(i);
 }
 
-int strf::getstr(std::string& str, int& Sel_point, int& selected, bool settings)
+int strf::getstr(std::string& str, int& Sel_point, int& selected, bool settings, const char* Prompt_Message)
 {
 	int got;
 	str.clear();
@@ -60,7 +60,7 @@ int strf::getstr(std::string& str, int& Sel_point, int& selected, bool settings)
 			str += tolower(got);
 		if (settings)
 		{
-			selected = pass::search(str, Sel_point, total, "\n\n\nSearch for the Service to be deleted >> ");
+			selected = pass::search(str, Sel_point, total, Prompt_Message);
 		}
 		else
 		{

@@ -200,7 +200,7 @@ void pass::Interface(std::string& master_password)
 		if (Sel_item == 1) { setting::add_service(master_password); }
 		if (Sel_item == 2) { setting::del_service(services, service_passwords, master_password); }
 		if (Sel_item == 3) { setting::change_master_password(master_password, service_passwords, pass::get_service_count()); }
-		if (Sel_item == 4) { setting::change_service_password(master_password); }
+		if (Sel_item == 4) { setting::change_service_password(master_password, service_passwords, pass_code); }
 	}
 	else
 	{

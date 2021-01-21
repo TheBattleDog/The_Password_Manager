@@ -24,20 +24,26 @@ namespace setting
 			pass::getpass(password, Pass_Prompt_Message);
 			std::cout << ReEnter_Prompt_Message;
 			pass::getpass(pass_confimation, Pass_Prompt_Message);
-			if (password != pass_confimation) { std::cout << "Passwords did match try re-entering >> "; }
+			if (password != pass_confimation) 
+			{
+				std::cout << "\nPasswords did match try re-entering...\n";
+				system("pause");
+				system("cls");
+				std::cout << "\n\n\nEnter the name of the Service to be added >> " << service;
+			}
 			else { break; }
 		}
 
 		// Add encryption to all options in settings... SURE MAN
-		std::ofstream fServices("services.txt", std::ios_base::app);	
+		std::ofstream fServices("services.txt", std::ios_base::app);
 
 		std::ofstream fPassword("pass.txt", std::ios_base::app);
 
 		std::ofstream fCode("cd.txt", std::ios_base::app);
 		
-		if (!fServices || !fPassword)
+		if (!fServices || !fPassword || !fCode)
 		{
-			std::cout << "Unable open Services.txt or Pass.txt\n";
+			std::cout << "Unable open dependencies...\n";
 			std::cout << "Press any key to continue...";
 			_getch();
 		}
@@ -63,34 +69,56 @@ namespace setting
 
 	void del_service(std::array<std::string, 50>& services, std::array<std::string, 50>& passwords, std::string& master_password)
 	{
+		std::array<std::string, 50>& service_code = pass::get_service_code_arr();
+		std::array<std::string, 50>& pass_code = pass::get_pass_code_arr();
+
 		std::string Service_name;
-		int Sel_point = 0; 
+		int Sel_point = 0;
 		int pos = 0;
 		char got;
+		const char* Prompt_Message = "\n\n\nSearch for the Service to be deleted >> ";
+
 		do
 		{
-			std::cout << "\n\n\nSearch for the Service to be deleted >> ";
-			got = strf::getstr(Service_name, Sel_point, pos, true);
+			std::cout << Prompt_Message;
+			got = strf::getstr(Service_name, Sel_point, pos, true, Prompt_Message);
 		} while (got != 13);
 		if (Service_name.size())
 		{
-			const std::string deleted_service = services[pos];
+			const char* deleted_service = services[pos].c_str();
 
 			for (int i = pos; isalpha(services[i][0]); i++)
 			{
 				services[i] = services[i + 1];
 				passwords[i] = passwords[i + 1];
+				service_code[i] = service_code[i + 1];
+				pass_code[i] = pass_code[i + 1];
 			}
+			
+			std::string Master_Code;
 
 			std::ofstream fServices("services.txt", std::ios::trunc);
 			std::ofstream fPasswords("pass.txt", std::ios::trunc);
-			for (int i = 0; isalpha(services[i][0]); i++)
+			std::ofstream fCode("cd.txt", std::ios::trunc);
+
+			int service_count = pass::get_service_count();
+
+			fPasswords << file_h::encrypt(master_password, Master_Code) << '\n';
+			fCode << Master_Code << '\n';
+
+			for (int i = 0; i < service_count; i++)
 			{
-				fServices << services[i] << '\n';
-				fPasswords << passwords[i] << '\n';
+				fServices << file_h::encrypt(services[i], service_code[i]) << '\n';
+				fPasswords << file_h::encrypt(passwords[i], pass_code[i]) << '\n';
+				fCode << service_code[i] << '\n';
+			}
+			for (int i = 0; i < service_count; i++)
+			{
+				fCode << pass_code[i] << '\n';
 			}
 			fServices.close();
 			fPasswords.close();
+			fCode.close();
 			std::cout << "\n\n\n\n" << deleted_service << " is successfully deleted";
 			std::cout << "\n\n\n\nPress any key to continue...";
 			_getch();
@@ -161,12 +189,75 @@ namespace setting
 		pass::Interface(master_password);
 	}
 
-	void change_service_password(std::string& master_password)
+	void change_service_password(std::string& master_password, std::array<std::string, 50>& Passwords, std::array<std::string, 50>& Pass_code)
 	{
-		system("cls");
-		std::cout << R"(Selected Change Service Password
-This feature is not yet available!!)" << '\n';
-		system("pause");
+
+		std::string service_name;
+		std::string password;
+		std::string confirmation;
+		const char* Prompt_Meassage = "\nEnter the Name of service to chage its Password >> ";
+		int Sel_Point = 0, pos = 0;
+		char got;
+		std::array<std::string, 50>& service_code = pass::get_service_code_arr();
+		std::array<std::string, 50>& service = pass::get_service_arr();
+
+		do
+		{
+			std::cout << Prompt_Meassage;
+			got = strf::getstr(service_name, Sel_Point, pos, true, Prompt_Meassage);
+		} while (got != 13);
+
+		while (true)
+		{
+			std::cout << "\n\nEnter the new Password >> ";
+			pass::getpass(password, "\n\nEnter the new password >> ");
+			std::cout << "\n\nRe-enter the Password >> ";
+			pass::getpass(confirmation, "\n\nRe-enter the Password >> ");
+
+			if (password != confirmation)
+			{
+				std::cout << "\n\n\nPasswords did not match...\n\n\n\n";
+				std::cout << "Pess any key to try again...";
+				_getch();
+			}
+			else
+			{
+				Passwords[pos] = password;
+				break;
+			}
+		}
+
+		std::string sCode;
+		file_h::get_master_password(master_password);
+
+		std::ofstream fPasswords("pass.txt", std::ios_base::trunc);
+		std::ofstream fCode("cd.txt", std::ios_base::trunc);
+
+		fPasswords << file_h::encrypt(master_password, sCode) << '\n';
+		fCode << sCode << '\n';
+
+		int service_count = pass::get_service_count();
+
+
+		for (int i = 0; i < service_count; i++)
+		{
+			fCode << service_code[i] << '\n';
+		}
+
+		for (int i = 0; i < service_count; i++)
+		{
+			fPasswords << file_h::encrypt(Passwords[i], sCode) << '\n';
+			fCode << sCode << '\n';
+		}
+
+		fPasswords.close();
+		fCode.close();
+
+		std::cout << '\n' << service[pos] << " password changed successfully.\n\n\n";
+		std::cout << "Press any key to continue...";
+		_getch();
+
+		pass::Interface(master_password);
 	}
 }
 
